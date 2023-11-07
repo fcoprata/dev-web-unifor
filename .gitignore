@@ -1,0 +1,21 @@
+# Arquivos gerados pelo Python
+*.pyc
+*.pyo
+__pycache__
+
+# Arquivos temporários
+*.tmp
+*.log
+
+# Arquivos de configuração
+.env
+
+# Arquivos de banco de dados
+*.db
+
+# Arquivos de cache
+*.cache
+
+# Arquivos de build
+dist
+build
