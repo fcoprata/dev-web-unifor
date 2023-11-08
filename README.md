@@ -22,15 +22,24 @@ Aqui estão alguns exemplos de como usar a aplicação:
 ```Obtenha todos os usuários
 GET /users
 
-Obtenha um usuário específico
-GET /users/<id>
+Obtenha um usuário específico pelo id
+GET /user/{id}
+
+Obtenha um usuário específico pelo nome
+GET /name/{name}
+
+Obtenha um usuário específico pelo email
+GET /email/{email}
 
 Crie um novo usuário
-POST /users
+POST /user/create
 
 Atualize um usuário existente
-PUT /users/<id>
+PUT /user/update/{id}
 
 Exclua um usuário
-DELETE /users/<id>
+DELETE /user/delete/{id}
+
+Login
+POST /login
 ```
