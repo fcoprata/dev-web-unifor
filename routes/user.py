@@ -1,5 +1,6 @@
 from bson import ObjectId
 from fastapi import APIRouter, HTTPException
+from src.verify_password import verify_password,pwd_context
 from models.user import User
 from config.db import conn
 from schemas.user import serializeList, serializeDict
@@ -25,6 +26,7 @@ async def find_user_by_email(email):
 @user.post('/user/create')
 async def create_user(user: User):
     existing_user = conn.desenvolvimento.user.find_one({"name": user.name})
+    user.password = pwd_context.hash(user.password)
     if existing_user is None:
         conn.desenvolvimento.user.insert_one(dict(user))
     else:
@@ -43,9 +45,9 @@ async def delete_user_by_id(id):
 @user.post('/login')
 async def login_user(username: str,password:str):
     user = conn.desenvolvimento.user.find_one({"name": username})
+    if not user or not verify_password(password, user["password"]):
+        raise HTTPException(status_code=401, detail="Incorrect password")
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
-    elif user['password'] != password:
-        raise HTTPException(status_code=401, detail="Incorrect password")
     else:
         return serializeDict(user)
