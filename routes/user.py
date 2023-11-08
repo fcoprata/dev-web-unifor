@@ -1,20 +1,24 @@
-from fastapi import APIRouter, HTTPException
 from bson import ObjectId
+from fastapi import APIRouter, HTTPException
 from models.user import User
 from config.db import conn
 from schemas.user import serializeList, serializeDict
 
 user = APIRouter()
 
-@user.get('/')
+@user.get('/users')
 async def find_all_users():
     return serializeList(conn.desenvolvimento.user.find())
 
-@user.get('/{name}')
-async def find_user(name):
-    return serializeList(conn.desenvolvimento.user.find_one({"name": name}))
+@user.get('/name/{name}')
+async def find_user_by_name(name):
+    return serializeDict(conn.desenvolvimento.user.find_one({"name": name}))
 
-@user.post('/')
+@user.get('/email/{email}')
+async def find_user_by_email(email):
+    return serializeDict(conn.desenvolvimento.user.find_one({"email": email}))
+
+@user.post('/user/create')
 async def create_user(user: User):
     existing_user = conn.desenvolvimento.user.find_one({"name": user.name})
     if existing_user is None:
@@ -23,12 +27,12 @@ async def create_user(user: User):
         return "User already exists"
     return serializeList(conn.desenvolvimento.user.find())
 
-@user.put('/{id}')
+@user.put('/user/update/{id}')
 async def update_user(id, user: User):
     conn.desenvolvimento.user.find_one_and_update({"_id": ObjectId(id)}, {"$set": dict(user)})
     return serializeDict(conn.desenvolvimento.user.find_one({"_id": ObjectId(id)}))
 
-@user.delete('/{id}')
+@user.delete('/user/delete/{id}')
 async def delete_user_by_id(id):
     return serializeDict(conn.desenvolvimento.user.find_one_and_delete({"_id": ObjectId(id)}))
 
